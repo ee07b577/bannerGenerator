@@ -4,7 +4,6 @@
 #content li.line{height: 1px; background: #dcdcdc; margin: 8px 0;}
 #content .left{float: left; width: 305px; padding: 15px; border: 1px solid #ccc; border-radius: 10px; background: #efefef;}
 #content .right{float: left; display: inline; margin-left: 50px;}
-#content canvas{border: 1px solid #ccc;}
 #content input[type=text]{border-radius: 5px; border: 1px solid #ccc; height: 23px;padding-left: 3px;}
 #content input.short{width:40px;}
 #content hr{height: 1px; background: #ccc; border: none; margin: 5px 0;}
