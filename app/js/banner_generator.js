@@ -26,6 +26,7 @@
   * 2. 标题模糊背景
   * 3. canvas高度变化后，文字拉拽变形 解决方案：不允许用户修改宽高
   * 4. 引入背景图，允许裁切
+  * 5. 新思路：多层可拖动，每层相互独立。点击生成图片时，再绘制canvas，并转化为img
   */
 
  // 声明变量
@@ -238,6 +239,8 @@
 
  // // select change 事件
  $('select').on('change', function() {
+     window[$(this).attr('id')] = $(this).val()
+     console.log($(this).attr('id') + ':' + $(this).val())
      drawBanner();
  });
 
@@ -246,7 +249,6 @@
  $('#colorWarp i').on('click', function() {
      bgRGB = $(this).attr('rgb')
      bgRGBA = 'rgba(' + bgRGB + ',' + bgOpacity + ')';
-
      $(this).addClass('current').siblings().removeClass('current')
      drawBanner();
  });
