@@ -25,7 +25,11 @@
 
         oC.onmousedown = function(ev) {
             var ev = ev || window.event;
+            console.log(ev)
+
+            // ev.clientX 表示网页中的X轴坐标， oC.offsetLeft表示画布相对于网页中的X轴方向的偏移量
             oGC.moveTo(ev.clientX - oC.offsetLeft, ev.clientY - oC.offsetTop);
+
             document.onmousemove = function(ev) {
                 var ev = ev || window.event;
                 oGC.lineTo(ev.clientX - oC.offsetLeft, ev.clientY - oC.offsetTop);

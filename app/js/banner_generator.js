@@ -22,12 +22,14 @@
 
 
  /* TODO:
-  * 1. canvas 定位变为fixed
-  * 2. current 样式
+  * 1. 拖拽文字
+  * 2. 标题模糊背景
+  * 3. canvas高度变化后，文字拉拽变形 解决方案：不允许用户修改宽高
+  * 4. 引入背景图，允许裁切
   */
 
  // 声明变量
- var image, width, height, iLeft, iTop, bgRGBA, bgOpacity, bgHeight,
+ var canvas, image, width, height, iLeft, iTop, bgRGBA, bgOpacity, bgHeight,
      titleFontSize, titleFontColor, titleLeft, titleTop, title,
      desFontSize, desFontColor, desLeft, desTop, description, titleFontStyle, desFontStyle;
  var bgRGB = '255,255,255';
@@ -37,8 +39,8 @@
  var imgScale = 1;
 
  function initConfig() {
-     width = $('#adWidth').val();
-     height = $('#adHeight').val();
+     width = $('#width').val();
+     height = $('#height').val();
      imgScale = $('#imgScale').val();
      iLeft = $('#iLeft').val();
      iTop = $('#iTop').val();
@@ -93,21 +95,34 @@
 
  }
 
- createCanvas();
+ // 读取文件数据
+ var FileData = new FileReader();
+ // 文件加载事件
+ FileData.onload = function(event) {
+     image = new Image();
+     // 文件加载事件
+     image.onload = function() {
+             drawBanner();
+         }
+         // event.target.result 获取文件路径
+     image.src = event.target.result;
 
- var files = $('#file');
- files.on('change', function(e) { //change 事件监听
+ }
+
+ $('#file').on('change', function(e) { //change 事件监听
      getfile(e);
  });
 
  function getfile() { //获取图片文件
      // 验证上传文件格式
      var fileFilter = /^(?:image\/bmp|image\/cis\-cod|image\/gif|image\/ief|image\/jpeg|image\/jpeg|image\/jpeg|image\/pipeg|image\/png|image\/svg\+xml|image\/tiff|image\/x\-cmu\-raster|image\/x\-cmx|image\/x\-icon|image\/x\-portable\-anymap|image\/x\-portable\-bitmap|image\/x\-portable\-graymap|image\/x\-portable\-pixmap|image\/x\-rgb|image\/x\-xbitmap|image\/x\-xpixmap|image\/x\-xwindowdump)$/i;
-     if (files.files.length === 0) { //如果没有传图片~创建画布继续执行
+
+     var files = document.getElementById('file').files;
+     if (files.length === 0) { //如果没有传图片~创建画布继续执行
          //颜色点击事件
          createCanvas();
      } else {
-         var oFile = files.files[0];
+         var oFile = files[0];
          if (!fileFilter.test(oFile.type)) {
              alert("上传的文件必须是图片格式!");
              return;
@@ -117,41 +132,26 @@
      }
  }
 
- // 读取文件数据
- var FileData = new FileReader();
- // 文件加载事件
- FileData.onload = function(event) {
 
-     image = new Image();
-     // 文件加载事件
-     image.onload = function() {
-             drawBanner();
-         }
-         // event.target.result 获取文件路径
-     image.src = event.target.result;
- }
 
 
  function drawBanner() { //有背景图片的动作
 
-     var canvas = document.getElementById('adMaker');
+     canvas = document.getElementById('adMaker');
      var context = canvas.getContext('2d');
 
      context.clearRect(0, 0, width, height);
 
-     // 绘制背景
-     context.fillStyle = bgRGBA;
-     context.fillRect(0, height - bgHeight, width, bgHeight);
-     var changecol = context.createLinearGradient(0, 0, width, height);
      //绘制背景渐变
+     var changecol = context.createLinearGradient(0, 0, width, height);
      changecol.addColorStop(0, bgRGBA);
      changecol.addColorStop(1, changeRGBA);
      context.fillStyle = changecol;
-     context.fillRect(0, 0, width, bgHeight);
+     context.fillRect(0, 0, width, height);
 
-     if (typeof img != 'undefined') {
+     if (typeof image != 'undefined') {
          //向画布上绘制图片
-         context.drawImage(img, left, top, imgwidth, imgheight);
+         context.drawImage(image, iLeft, iTop, image.width * imgScale, image.height * imgScale);
      }
 
      // 绘制标题文字
@@ -175,10 +175,10 @@
      context.fillStyle = desFontColor;
      context.font = 'normal ' + desFontSize + 'px ' + desFontStyle;
      context.fillText(description, desLeft, desTop);
-     if (typeof img != 'undefined' && bgtexture != 'no-repeat') {
+     if (typeof image != 'undefined' && bgtexture != 'no-repeat') {
          //绘制纹理 
-         // console.log("lall"+img);   
-         var pattern = context.createPattern(img, bgtexture);
+
+         var pattern = context.createPattern(image, bgtexture);
          context.fillStyle = pattern;
          context.fillRect(0, 0, width, bgHeight);
      }
@@ -187,13 +187,12 @@
 
 
  function showImage() { //展示图片
-     var mb = $('#mb');
-     var img = $("#MyPix");
-     mb.style.display = 'block';
-     img.style.display = 'block';
+     $('#mb').show();
+     $("#MyPix").show();
+
      mb.onclick = function() {
-         mb.style.display = 'none';
-         img.style.display = 'none';
+         $('#mb').hide();
+         $("#MyPix").hide();
      }
  }
 
@@ -208,30 +207,31 @@
      return true;
  }
 
+ $('#sizeConfirm').on('click', function() {
+     $(this).hide();
+     $('#width').attr('disabled', true);
+     $('#height').attr('disabled', true)
+     $('li').show();
+     createCanvas();
+ })
+
  // input change事件
  $('input').on('change', function() {
      if (validate($(this))) {
-         if ($(this).attr('id') == 'adWidth') {
-             $("#adMaker").width($(this).val());
-         }
-         if ($(this).attr('id') == 'adHeight') {
-             $("#adMaker").height($(this).val());
-         }
          window[$(this).attr('id')] = $(this).val()
-         drawBanner();
+         if ($(this).attr('id') != 'width' && $(this).attr('id') != 'height')
+             drawBanner();
      }
 
  });
 
 
  $('#putOut').on('click', function() {
-     var canvas = $("#adMaker");
      if (canvas.getContext) {
          var ctx = canvas.getContext("2d"); // 获取2d画布
          var myImage = canvas.toDataURL("image/png"); // 转化为图像数据
      }
-     var imageElement = $("#MyPix"); // 获取一个图像NODE
-     imageElement.src = myImage;
+     $("#MyPix").attr('src', myImage); // 获取一个图像NODE
      showImage();
      alert('请右键点击图片另存为存储图片！');
  });

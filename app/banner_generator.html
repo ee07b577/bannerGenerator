@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <title>Canvas 小工具</title>
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/banner_generator.css">
     <script src="components/jquery/dist/jquery.min.js"></script>
 </head>
 
@@ -13,11 +13,12 @@
         <div class="left">
             <ul>
                 <li class="line"></li>
-                <li>
+                <li style="display: inline-block;">
                     <label>图片宽度：</label>
-                    <input type="text" id="adWidth" class="short" value="640" data-reg="^([1-9]\d*)$" data-msg="宽高只能为大于0的整数" />&nbsp;
+                    <input type="text" id="width" class="short" value="640" data-reg="^([1-9]\d*)$" data-msg="宽高只能为大于0的整数" />&nbsp;
                     <label>图片高度：</label>
-                    <input type="text" id="adHeight" class="short" value="100" data-reg="^([1-9]\d*)$" data-msg="宽高只能为大于0的整数" /> px
+                    <input type="text" id="height" class="short" value="100" data-reg="^([1-9]\d*)$" data-msg="宽高只能为大于0的整数" /> px
+                    <button id="sizeConfirm">banner尺寸一旦确定不支持改动哦</button>
                 </li>
                 <li class="line"></li>
                 <li id="colorWarp">
@@ -173,7 +174,6 @@
         </div>
         <div id="mb"></div>
         <img id="MyPix">
-        <canvas id="myCanvas"></canvas>
     </div>
     <script type="text/javascript" src="js/banner_generator.js"></script>
 </body>
