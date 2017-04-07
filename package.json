@@ -11,5 +11,8 @@
     "url": "http://fex.staff.ifeng.com/Tool/banner_generator.git"
   },
   "author": "qinsw",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "bower": "^1.8.0"
+  }
 }
